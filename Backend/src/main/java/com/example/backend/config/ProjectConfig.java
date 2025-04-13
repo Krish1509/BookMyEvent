@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 import com.cloudinary.Cloudinary;
 
 @Configuration
-public class projectconfig {
+public class ProjectConfig {
  
     @Autowired
     private CloudinaryProperties cloudinaryProperties;
