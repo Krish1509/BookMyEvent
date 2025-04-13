@@ -12,7 +12,7 @@ export default function LoginPage() {
     const code = urlParams.get('code');
     
     if (code) {
-      login(code);
+      login();
     }
   }, [login]);
 
