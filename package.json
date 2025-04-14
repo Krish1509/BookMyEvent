@@ -1,0 +1,13 @@
+{
+  "name": "bookmyevent",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "npm run both",
+    "both": "concurrently \"npm run frontend\" \"npm run backend\"",
+    "frontend": "npm run dev --prefix frontend",
+    "backend": "cd backend && ./mvnw spring-boot:run"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}

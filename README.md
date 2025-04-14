@@ -124,5 +124,9 @@ https://chatgpt.com/canvas/shared/67fc07581d1481919d00f5c0223b921b
     ├── postcss.config.mjs           # PostCSS configuration
     ├── tsconfig.json                # TypeScript configuration
 
+-------------------------------------------------------
 
-
+# Run both Server
+1. Make sure cd BookMyEvent
+2. npm i
+3. npm run both
