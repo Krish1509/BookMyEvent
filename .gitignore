@@ -1,6 +1,19 @@
 # Application Properties with sensitive data
 Backend/src/main/resources/application.properties
-/node_modules
+
+# Node.js
+node_modules/
+**/node_modules/
+frontend/node_modules/
+frontend/.next/
+frontend/.env
+frontend/.env.local
+frontend/.env.development.local
+frontend/.env.test.local
+frontend/.env.production.local
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
 
 # Maven
 Backend/target/
