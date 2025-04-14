@@ -1,5 +1,6 @@
 # Application Properties with sensitive data
 Backend/src/main/resources/application.properties
+/node_modules
 
 # Maven
 Backend/target/
