@@ -23,7 +23,7 @@ export function useAuth() {
         setIsAuthenticated(true);
         
         // Clean URL and redirect
-        const redirectUrl = localStorage.getItem('redirect_after_login') || '/';
+        const redirectUrl = localStorage.getItem('redirect_after_login') || '/vendor';
         localStorage.removeItem('redirect_after_login');
         router.replace(redirectUrl);
         return;
