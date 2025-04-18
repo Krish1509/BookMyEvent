@@ -4,9 +4,12 @@ import { motion } from 'framer-motion';
 import { FaGoogle, FaArrowRight, FaUserPlus, FaInfoCircle } from 'react-icons/fa';
 import { TypeAnimation } from 'react-type-animation';
 import { useAuth } from '../hooks/useAuth';
+import { useState } from 'react';
+import RegistrationChoiceModal from './RegistrationChoiceModal';
 
 export default function HeroSection() {
   const { login, isLoggedIn } = useAuth();
+  const [isRegistrationModalOpen, setIsRegistrationModalOpen] = useState(false);
 
   const handleLearnMore = () => {
     const featuresSection = document.getElementById('features');
@@ -26,22 +29,7 @@ export default function HeroSection() {
   };
 
   const handleRegister = () => {
-    const userType = localStorage.getItem('userType');
-    
-    if (userType === 'vendor') {
-      window.location.href = '/vendor/register';
-    } else if (userType === 'user') {
-      window.location.href = '/user/register';
-    } else {
-      const choice = window.confirm('Are you registering as a vendor? Click OK for vendor, Cancel for user.');
-      if (choice) {
-        localStorage.setItem('userType', 'vendor');
-        window.location.href = '/vendor/register';
-      } else {
-        localStorage.setItem('userType', 'user');
-        window.location.href = '/user/register';
-      }
-    }
+    setIsRegistrationModalOpen(true);
   };
 
   return (
@@ -294,6 +282,11 @@ export default function HeroSection() {
           </motion.div>
         </motion.div>
       </div>
+
+      <RegistrationChoiceModal 
+        isOpen={isRegistrationModalOpen}
+        onClose={() => setIsRegistrationModalOpen(false)}
+      />
     </div>
   );
 } 

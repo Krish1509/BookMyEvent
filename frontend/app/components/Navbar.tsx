@@ -7,6 +7,7 @@ import { FaGoogle, FaUserCircle, FaSignOutAlt, FaExchangeAlt, FaEnvelope, FaSign
 import { HiMenuAlt4, HiX } from 'react-icons/hi';
 import { useAuth } from '../hooks/useAuth';
 import Link from 'next/link';
+import RegistrationChoiceModal from './RegistrationChoiceModal';
 
 export default function Navbar() {
   const router = useRouter();
@@ -15,6 +16,7 @@ export default function Navbar() {
   const { isLoggedIn, userName, profilePic, email, login, logout, isClient } = useAuth();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isRegistrationModalOpen, setIsRegistrationModalOpen] = useState(false);
 
   const handleLogout = useCallback(() => {
     logout();
@@ -29,25 +31,8 @@ export default function Navbar() {
   }, [logout, login]);
 
   const handleRegister = useCallback(() => {
-    if (!isClient) return;
-    
-    const userType = localStorage.getItem('userType');
-    
-    if (userType === 'vendor') {
-      router.push('/vendor/register');
-    } else if (userType === 'user') {
-      router.push('/user/register');
-    } else {
-      const choice = window.confirm('Are you registering as a vendor? Click OK for vendor, Cancel for user.');
-      if (choice) {
-        localStorage.setItem('userType', 'vendor');
-        router.push('/vendor/register');
-      } else {
-        localStorage.setItem('userType', 'user');
-        router.push('/user/register');
-      }
-    }
-  }, [router, isClient]);
+    setIsRegistrationModalOpen(true);
+  }, []);
 
   const toggleMobileMenu = useCallback(() => {
     setIsMobileMenuOpen(prev => !prev);
@@ -401,6 +386,11 @@ export default function Navbar() {
           )}
         </AnimatePresence>
       </div>
+
+      <RegistrationChoiceModal 
+        isOpen={isRegistrationModalOpen}
+        onClose={() => setIsRegistrationModalOpen(false)}
+      />
     </motion.nav>
   );
 } 
