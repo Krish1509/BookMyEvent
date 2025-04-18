@@ -1,21 +1,26 @@
-const BACKEND_URL = 'http://localhost:8080';
+const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
 const FRONTEND_URL = 'http://localhost:3000';
 
 export const authService = {
   async loginWithGoogle() {
     // Store the current URL to redirect back after login
     localStorage.setItem('redirect_after_login', window.location.pathname);
-    window.location.href = `${BACKEND_URL}/oauth2/authorization/google`;
+    
+    // Redirect to backend's OAuth endpoint with the frontend callback URL
+    const callbackUrl = encodeURIComponent(`${window.location.origin}/auth/callback`);
+    window.location.href = `${BACKEND_URL}/oauth2/authorization/google?redirect_uri=${callbackUrl}`;
   },
 
   handleAuthRedirect() {
     const urlParams = new URLSearchParams(window.location.search);
     const token = urlParams.get('token');
     const name = urlParams.get('name');
+    const email = urlParams.get('email');
 
     if (token) {
       localStorage.setItem('auth_token', token);
       localStorage.setItem('user_name', name || '');
+      localStorage.setItem('email', email || '');
       
       // Get the stored redirect URL or default to home
       const redirectUrl = localStorage.getItem('redirect_after_login') || '/';
@@ -29,48 +34,68 @@ export const authService = {
     return false;
   },
 
-  async handleOAuthCallback(code: string) {
-    try {
-      const response = await fetch(`${BACKEND_URL}/oauth2/callback/google?code=${code}`, {
-        credentials: 'include',
-      });
-      
-      if (response.ok) {
-        const data = await response.json();
-        localStorage.setItem('auth_token', data.token);
+  async handleOAuthCallback() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get('token');
+    const name = urlParams.get('name');
+    const picture = urlParams.get('picture');
+    const email = urlParams.get('email');
+
+    if (token) {
+      try {
+        // Store all user information in localStorage
+        localStorage.setItem('token', token);
+        localStorage.setItem('userName', name || '');
+        localStorage.setItem('profilePic', picture || '');
+        localStorage.setItem('email', email || '');
         
         // Get the stored redirect URL or default to home
         const redirectUrl = localStorage.getItem('redirect_after_login') || '/';
         localStorage.removeItem('redirect_after_login');
+        
+        // Clean the URL and redirect
+        window.history.replaceState({}, document.title, window.location.pathname);
         window.location.href = redirectUrl;
-        return true;
+      } catch (error) {
+        console.error('Error handling OAuth callback:', error);
+        // Redirect to home page in case of error
+        window.location.href = '/';
       }
-      return false;
-    } catch (error) {
-      console.error('OAuth callback error:', error);
-      return false;
     }
   },
 
   async logout() {
     try {
-      await fetch(`${BACKEND_URL}/logout`, {
-        credentials: 'include',
+      await fetch(`${BACKEND_URL}/api/auth/logout`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        },
       });
     } catch (error) {
       console.error('Logout error:', error);
     } finally {
       // Always clear local storage
-      localStorage.removeItem('auth_token');
-      localStorage.removeItem('user_name');
+      localStorage.removeItem('token');
+      localStorage.removeItem('userName');
+      localStorage.removeItem('profilePic');
+      localStorage.removeItem('email');
     }
   },
 
   isAuthenticated() {
-    return !!localStorage.getItem('auth_token');
+    return !!localStorage.getItem('token');
   },
 
   getUserName() {
-    return localStorage.getItem('user_name') || '';
+    return localStorage.getItem('userName') || '';
+  },
+
+  getProfilePic() {
+    return localStorage.getItem('profilePic') || '';
+  },
+
+  getEmail() {
+    return localStorage.getItem('email') || '';
   }
 }; 

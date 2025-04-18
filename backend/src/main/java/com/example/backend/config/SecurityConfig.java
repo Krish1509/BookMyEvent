@@ -15,6 +15,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Arrays;
+import java.net.URLEncoder;
 
 @Configuration
 @EnableWebSecurity
@@ -35,12 +36,25 @@ public class SecurityConfig {
                 .loginPage("/login")
                 .successHandler((request, response, authentication) -> {
                     OAuth2User oauth2User = (OAuth2User) authentication.getPrincipal();
-                    // You can customize what user data to send here
+                    // Get user information from OAuth2User
                     String email = oauth2User.getAttribute("email");
                     String name = oauth2User.getAttribute("name");
+                    String picture = oauth2User.getAttribute("picture");
                     
-                    // Redirect to frontend with auth data
-                    response.sendRedirect(FRONTEND_URL + "?token=" + email + "&name=" + name);
+                    // Generate a token (you might want to use JWT here)
+                    String token = email; // Using email as token for now
+                    
+                    // Build the redirect URL with all user information
+                    String redirectUrl = String.format("%s/auth/callback?token=%s&name=%s&email=%s&picture=%s",
+                        FRONTEND_URL,
+                        token,
+                        name != null ? URLEncoder.encode(name, "UTF-8") : "",
+                        email != null ? URLEncoder.encode(email, "UTF-8") : "",
+                        picture != null ? URLEncoder.encode(picture, "UTF-8") : ""
+                    );
+                    
+                    // Redirect to frontend with all user data
+                    response.sendRedirect(redirectUrl);
                 })
             )
             .logout(logout -> logout
