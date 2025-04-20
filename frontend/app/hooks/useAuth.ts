@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { authService } from '../services/auth';
+import { useRouter } from 'next/navigation';
 
 const parseJwt = (token: string) => {
   try {
@@ -30,6 +31,7 @@ export const useAuth = () => {
   const [email, setEmail] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isClient, setIsClient] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     setIsClient(true);
@@ -95,25 +97,6 @@ export const useAuth = () => {
 
     checkLoginStatus();
 
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.has('token')) {
-      setIsLoading(true);
-      const token = urlParams.get('token');
-      const name = urlParams.get('name');
-      const picture = urlParams.get('picture');
-      const userEmail = urlParams.get('email');
-
-      if (token) {
-        localStorage.setItem('token', token);
-        if (name) localStorage.setItem('userName', name);
-        if (picture) localStorage.setItem('profilePic', picture);
-        if (userEmail) localStorage.setItem('email', userEmail);
-        
-        window.history.replaceState({}, document.title, window.location.pathname);
-      }
-      checkLoginStatus();
-    }
-
     const handleStorageChange = (e: StorageEvent) => {
       if (e.key === 'token' || e.key === 'userName' || e.key === 'profilePic' || e.key === 'email') {
         checkLoginStatus();
@@ -124,24 +107,55 @@ export const useAuth = () => {
     return () => window.removeEventListener('storage', handleStorageChange);
   }, [isClient]);
 
-  const login = () => {
+  const login = async () => {
     if (isClient) {
-      authService.loginWithGoogle();
+      try {
+        await authService.loginWithGoogle();
+      } catch (error) {
+        console.error('Error during login:', error);
+      }
     }
   };
 
-  const logout = () => {
+  const logout = async () => {
     if (isClient) {
-      localStorage.removeItem('token');
-      localStorage.removeItem('userName');
-      localStorage.removeItem('profilePic');
-      localStorage.removeItem('email');
-      setIsLoggedIn(false);
-      setUserName(null);
-      setProfilePic(null);
-      setEmail(null);
+      try {
+        // Clear localStorage first
+        localStorage.removeItem('token');
+        localStorage.removeItem('userName');
+        localStorage.removeItem('profilePic');
+        localStorage.removeItem('email');
+        
+        // Update state immediately
+        setIsLoggedIn(false);
+        setUserName(null);
+        setProfilePic(null);
+        setEmail(null);
+        
+        // Then call the auth service logout
+        await authService.logout();
+        
+        // Force a state update to ensure UI reflects the change
+        window.dispatchEvent(new Event('storage'));
+        
+        // Force a re-render of all components using this hook
+        window.dispatchEvent(new Event('auth-state-changed'));
+      } catch (error) {
+        console.error('Error during logout:', error);
+      }
     }
   };
+
+  // Listen for auth state changes
+  useEffect(() => {
+    const handleAuthStateChange = () => {
+      const token = localStorage.getItem('token');
+      setIsLoggedIn(!!token);
+    };
+
+    window.addEventListener('auth-state-changed', handleAuthStateChange);
+    return () => window.removeEventListener('auth-state-changed', handleAuthStateChange);
+  }, []);
 
   return {
     isLoggedIn,

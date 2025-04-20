@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from 'framer-motion';
-import Navbar from './components/Navbar';
+import Navbar from './components/navbar/Navbar';
 import HeroSection from './components/HeroSection';
 import FeaturesSection from './components/FeaturesSection';
 import Footer from './components/Footer';

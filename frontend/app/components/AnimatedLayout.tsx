@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import Navbar from './Navbar';
+import Navbar from './navbar/Navbar';
 // import Footer from './Footer';
 import BackgroundAnimation from './BackgroundAnimation';
 
