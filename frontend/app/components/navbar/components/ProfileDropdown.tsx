@@ -38,6 +38,7 @@ export default function ProfileDropdown() {
         setIsLoggedIn(!!token);
     };
 
+
     window.addEventListener('auth-state-changed', handleAuthStateChange);
     return () => window.removeEventListener('auth-state-changed', handleAuthStateChange);
   }, []);
@@ -66,7 +67,7 @@ export default function ProfileDropdown() {
             </div>
           )}
         </div>
-        <span className="hidden md:inline-block text-sm font-medium text-gray-700 dark:text-gray-200 truncate max-w-[150px]">
+        <span className="hidden md:inline-block text-sm font-medium text-gray-100 dark:text-gray-200 truncate max-w-[150px]">
           {userName || 'User'}
         </span>
       </button>

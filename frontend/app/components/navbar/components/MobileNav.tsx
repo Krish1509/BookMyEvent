@@ -6,11 +6,13 @@ import { FaGoogle, FaUserCircle, FaSignOutAlt, FaExchangeAlt, FaEnvelope, FaSign
 import { HiMenuAlt4, HiX } from 'react-icons/hi';
 import { useAuth } from '../../../hooks/useAuth';
 import { useRouter } from 'next/navigation';
+import RegistrationChoiceModal from '../../RegistrationChoiceModal';
 
 export default function MobileNav() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { isLoggedIn, userName, profilePic, email, login, logout } = useAuth();
   const router = useRouter();
+  const [isRegistrationModalOpen, setIsRegistrationModalOpen] = useState(false);
 
   // Close mobile menu if user is not logged in
   useEffect(() => {
@@ -64,11 +66,10 @@ export default function MobileNav() {
     login();
   }, [logout, login]);
 
-  const handleRegister = useCallback(() => {
-    router.push('/register');
-    setIsMobileMenuOpen(false);
-  }, [router]);
 
+  const handleRegister = () => {
+    setIsRegistrationModalOpen(true);
+  };
   return (
     <>
       <div className="md:hidden">
@@ -226,6 +227,10 @@ export default function MobileNav() {
                   )}
                 </div>
               </div>
+              <RegistrationChoiceModal 
+                            isOpen={isRegistrationModalOpen}
+                            onClose={() => setIsRegistrationModalOpen(false)}
+                          />
             </motion.div>
           </>
         )}

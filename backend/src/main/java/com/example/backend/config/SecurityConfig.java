@@ -1,21 +1,17 @@
 package com.example.backend.config;
 
+import java.net.URLEncoder;
+import java.util.Arrays;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.OAuth2User;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.Arrays;
-import java.net.URLEncoder;
 
 @Configuration
 @EnableWebSecurity
@@ -29,7 +25,7 @@ public class SecurityConfig {
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/error", "/login", "/oauth2/**").permitAll()
+                .requestMatchers("/error", "/oauth2/**").permitAll()
                 .anyRequest().authenticated()
             )
             .oauth2Login(oauth2 -> oauth2
@@ -40,6 +36,7 @@ public class SecurityConfig {
                     String email = oauth2User.getAttribute("email");
                     String name = oauth2User.getAttribute("name");
                     String picture = oauth2User.getAttribute("picture");
+                    
                     
                     // Generate a token (you might want to use JWT here)
                     String token = email; // Using email as token for now

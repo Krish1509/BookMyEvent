@@ -6,9 +6,14 @@ import { FaGoogle, FaSignInAlt } from 'react-icons/fa';
 import { useAuth } from '../../../hooks/useAuth';
 import ProfileDropdown from './ProfileDropdown';
 import { useRouter } from 'next/navigation';
+import RegistrationChoiceModal from '../../RegistrationChoiceModal';
+import { useState } from 'react';
 
 export default function DesktopNav() {
   const { isLoggedIn, login } = useAuth();
+  const [isRegistrationModalOpen, setIsRegistrationModalOpen] = useState(false);
+
+  
   const router = useRouter();
 
   const handleScrollToSection = useCallback((sectionId: string) => {
@@ -32,10 +37,10 @@ export default function DesktopNav() {
     }
   }, []);
 
-  const handleRegister = useCallback(() => {
-    router.push('/register');
-  }, [router]);
-
+ 
+  const handleRegister = () => {
+    setIsRegistrationModalOpen(true);
+  };
   return (
     <motion.div 
       initial={{ opacity: 0, y: -10 }}
@@ -90,6 +95,10 @@ export default function DesktopNav() {
           </motion.button>
         )}
       </div>
+       <RegistrationChoiceModal 
+              isOpen={isRegistrationModalOpen}
+              onClose={() => setIsRegistrationModalOpen(false)}
+            />
     </motion.div>
   );
 } 
