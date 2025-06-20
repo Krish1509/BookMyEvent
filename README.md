@@ -2,15 +2,22 @@
 
 Your one-stop platform to book venues, vendors, and perfect every celebration.
 
-# Building....
-https://docs.google.com/document/d/1BWX3vokUXdPTIpG1Lr8OGauAyY2GTLkRDizCpz0oq-U/edit?usp
-
----------------------------------------------------
-
-# Rules:
-https://chatgpt.com/canvas/shared/67fc07581d1481919d00f5c0223b921b
-
 ----------------------------------------------------
+# Root:
+1 .env :
+# PostgreSQL
+SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/bookmyevent
+SPRING_DATASOURCE_USERNAME=
+SPRING_DATASOURCE_PASSWORD=
+
+# Google OAuth
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+
+# Cloudinary
+CLOUDINARY_CLOUD_NAME=
+CLOUDINARY_API_KEY=
+CLOUDINARY_API_SECRET=
 
 # Backend:
 1. cd backend
