@@ -1,5 +1,5 @@
 # Application Properties with sensitive data
-Backend/src/main/resources/application.properties
+# Backend/src/main/resources/application.properties
 
 # Node.js
 node_modules/
