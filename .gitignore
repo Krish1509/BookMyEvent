@@ -37,4 +37,4 @@ Backend/target/
 *.rar
 
 # virtual machine crash logs
-hs_err_pid* 
+hs_err_pid* .env
