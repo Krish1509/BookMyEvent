@@ -11,7 +11,6 @@ export default function ProfileDropdown() {
   const { isLoggedIn, userName, profilePic, email, login, logout } = useAuth();
   const router = useRouter();
 
-  // Close dropdown when user logs out
   useEffect(() => {
     if (!isLoggedIn) {
       setIsProfileOpen(false);
@@ -31,21 +30,17 @@ export default function ProfileDropdown() {
     login();
   }, [logout, login]);
 
-  // New effect to listen for auth state changes
   useEffect(() => {
     const handleAuthStateChange = () => {
-        const token = localStorage.getItem('token');
-        setIsLoggedIn(!!token);
+      // Optional: Log or refresh things if needed
+      console.log("Auth state changed");
     };
-
 
     window.addEventListener('auth-state-changed', handleAuthStateChange);
     return () => window.removeEventListener('auth-state-changed', handleAuthStateChange);
   }, []);
 
-  if (!isLoggedIn) {
-    return null;
-  }
+  if (!isLoggedIn) return null;
 
   return (
     <div className="relative">
@@ -136,4 +131,4 @@ export default function ProfileDropdown() {
       </AnimatePresence>
     </div>
   );
-} 
+}
