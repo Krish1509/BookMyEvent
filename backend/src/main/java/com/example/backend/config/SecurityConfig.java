@@ -2,6 +2,7 @@ package com.example.backend.config;
 
 import java.net.URLEncoder;
 import java.util.Arrays;
+import org.springframework.beans.factory.annotation.Value;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,8 +18,9 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    private static final String FRONTEND_URL = "http://localhost:3000";
-
+    @Value("${frontend.url}")
+    private String FRONTEND_URL;
+    
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
