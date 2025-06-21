@@ -1,5 +1,4 @@
-const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
-const FRONTEND_URL = 'http://localhost:3000';
+const BACKEND_URL = 'https://bookmyevent-25dv.onrender.com';
 
 export const authService = {
   async loginWithGoogle() {
