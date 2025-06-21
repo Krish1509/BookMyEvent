@@ -172,11 +172,12 @@ export default function VendorForm() {
       formData.append('area', form.area);
       formData.append('pincode', form.pincode);
 
-      const res = await fetch('http://localhost:8080/addvendor', {
-        method: 'POST',
-        body: formData,
-        credentials: 'include',
-      });
+  const res = await fetch(`${process.env.BACKEND_API_URL}/addvendor`, {
+  method: 'POST',
+  body: formData,
+  credentials: 'include', // required for cookies/session
+});
+
 
       if (res.ok) {
         setIsSuccess(true);
