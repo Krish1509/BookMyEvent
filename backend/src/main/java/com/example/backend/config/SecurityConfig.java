@@ -26,10 +26,16 @@ public class SecurityConfig {
         http
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .csrf(csrf -> csrf.disable())
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/error", "/oauth2/**").permitAll()
-                .anyRequest().authenticated()
-            )
+           .authorizeHttpRequests(auth -> auth
+    .requestMatchers(
+        "/error",
+        "/oauth2/**",
+        "/addvendor", // allow unauthenticated POSTs to this
+        "/login"
+    ).permitAll()
+    .anyRequest().authenticated()
+)
+
             .oauth2Login(oauth2 -> oauth2
                 .loginPage("/login")
                 .successHandler((request, response, authentication) -> {
