@@ -28,37 +28,32 @@ public class SecurityConfig {
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers(
-                    "/error",
-                    "/oauth2/**",
-                    "/addvendor",
-                    "/login"
-                ).permitAll()
+                .requestMatchers("/error", "/oauth2/**", "/addvendor", "/login").permitAll()
                 .anyRequest().authenticated()
             )
             .oauth2Login(oauth2 -> oauth2
-    .loginPage("/login")
-    .successHandler((request, response, authentication) -> {
-        OAuth2User oauth2User = (OAuth2User) authentication.getPrincipal();
+                .loginPage("/login")
+                .successHandler((request, response, authentication) -> {
+                    OAuth2User oauth2User = (OAuth2User) authentication.getPrincipal();
 
-        String email = oauth2User.getAttribute("email");
-        String name = oauth2User.getAttribute("name");
-        String picture = oauth2User.getAttribute("picture");
-        String token = email; // Temporary placeholder for token (replace with JWT if needed)
+                    String email = oauth2User.getAttribute("email");
+                    String name = oauth2User.getAttribute("name");
+                    String picture = oauth2User.getAttribute("picture");
 
-        // Avoid CR/LF problems and encode everything properly
-        String redirectUrl = String.format("%s/auth/callback?token=%s&name=%s&email=%s&picture=%s",
-            FRONTEND_URL,
-            URLEncoder.encode(token.replaceAll("[\\r\\n]", ""), StandardCharsets.UTF_8),
-            URLEncoder.encode(name != null ? name.replaceAll("[\\r\\n]", "") : "", StandardCharsets.UTF_8),
-            URLEncoder.encode(email != null ? email.replaceAll("[\\r\\n]", "") : "", StandardCharsets.UTF_8),
-            URLEncoder.encode(picture != null ? picture.replaceAll("[\\r\\n]", "") : "", StandardCharsets.UTF_8)
-        );
+                    String token = email; // Use JWT here in real apps
 
-        response.sendRedirect(redirectUrl);
-    })
-)
+                    // Safe encoding
+                    String redirectUrl = String.format("%s/auth/callback?token=%s&name=%s&email=%s&picture=%s",
+                        FRONTEND_URL,
+                        encode(token),
+                        encode(name),
+                        encode(email),
+                        encode(picture)
+                    );
 
+                    response.sendRedirect(redirectUrl);
+                })
+            )
             .logout(logout -> logout
                 .logoutSuccessHandler((request, response, authentication) -> {
                     response.sendRedirect(FRONTEND_URL + "/login");
@@ -68,7 +63,6 @@ public class SecurityConfig {
         return http.build();
     }
 
-    // Encoding helper method to sanitize and encode URL parameters
     private String encode(String s) {
         return s != null ? URLEncoder.encode(s.replaceAll("[\r\n]", ""), StandardCharsets.UTF_8) : "";
     }
