@@ -48,15 +48,14 @@ public class SecurityConfig {
                     String token = email; // Placeholder for token, use JWT in real apps
 
                     // Build redirect URL with encoded parameters
-                    String redirectUrl = String.format("%s/auth/callback?token=%s&name=%s&email=%s&picture=%s",
-                        FRONTEND_URL,
-                        encode(token),
-                        encode(name),
-                        encode(email),
-                        encode(picture)
-                    );
-
-                    response.sendRedirect(redirectUrl);
+                  String redirectUrl = String.format("%s/auth/callback?token=%s&name=%s&email=%s&picture=%s",
+    FRONTEND_URL,
+    encode(token),
+    encode(name),
+    encode(email),
+    encode(picture)
+);
+response.sendRedirect(redirectUrl);
                 })
             )
             .logout(logout -> logout

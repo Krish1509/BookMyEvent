@@ -4,33 +4,9 @@ export const authService = {
   async loginWithGoogle() {
     // Store the current URL to redirect back after login
     localStorage.setItem('redirect_after_login', window.location.pathname);
-    
-    // Redirect to backend's OAuth endpoint with the frontend callback URL
-    const callbackUrl = encodeURIComponent(`${window.location.origin}/auth/callback`);
-    window.location.href = `${BACKEND_URL}/oauth2/authorization/google?redirect_uri=${callbackUrl}`;
-  },
 
-  handleAuthRedirect() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const token = urlParams.get('token');
-    const name = urlParams.get('name');
-    const email = urlParams.get('email');
-
-    if (token) {
-      localStorage.setItem('auth_token', token);
-      localStorage.setItem('user_name', name || '');
-      localStorage.setItem('email', email || '');
-      
-      // Get the stored redirect URL or default to home
-      const redirectUrl = localStorage.getItem('redirect_after_login') || '/';
-      localStorage.removeItem('redirect_after_login');
-      
-      // Remove the token from URL and redirect
-      window.history.replaceState({}, document.title, window.location.pathname);
-      window.location.href = redirectUrl;
-      return true;
-    }
-    return false;
+    // Redirect to backend OAuth2 endpoint
+    window.location.href = `${BACKEND_URL}/oauth2/authorization/google`;
   },
 
   async handleOAuthCallback() {
@@ -47,17 +23,17 @@ export const authService = {
         localStorage.setItem('userName', name || '');
         localStorage.setItem('profilePic', picture || '');
         localStorage.setItem('email', email || '');
-        
+
         // Get the stored redirect URL or default to home
         const redirectUrl = localStorage.getItem('redirect_after_login') || '/';
         localStorage.removeItem('redirect_after_login');
-        
-        // Clean the URL and redirect
+
+        // Clean the URL (remove query params) and redirect
         window.history.replaceState({}, document.title, window.location.pathname);
         window.location.href = redirectUrl;
       } catch (error) {
         console.error('Error handling OAuth callback:', error);
-        // Redirect to home page in case of error
+        // Fallback to home
         window.location.href = '/';
       }
     }
@@ -97,4 +73,4 @@ export const authService = {
   getEmail() {
     return localStorage.getItem('email') || '';
   }
-}; 
+};
