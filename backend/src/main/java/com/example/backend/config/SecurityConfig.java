@@ -45,14 +45,15 @@ public class SecurityConfig {
                     String name = oauth2User.getAttribute("name");
                     String picture = oauth2User.getAttribute("picture");
 
-                    String token = email; // Placeholder for token, consider using JWT
+                    String token = email; // Placeholder for token, use JWT in real apps
 
+                    // Build redirect URL with encoded parameters
                     String redirectUrl = String.format("%s/auth/callback?token=%s&name=%s&email=%s&picture=%s",
                         FRONTEND_URL,
-                        token,
-                        name != null ? URLEncoder.encode(name, StandardCharsets.UTF_8) : "",
-                        email != null ? URLEncoder.encode(email, StandardCharsets.UTF_8) : "",
-                        picture != null ? URLEncoder.encode(picture, StandardCharsets.UTF_8) : ""
+                        encode(token),
+                        encode(name),
+                        encode(email),
+                        encode(picture)
                     );
 
                     response.sendRedirect(redirectUrl);
@@ -65,6 +66,11 @@ public class SecurityConfig {
             );
 
         return http.build();
+    }
+
+    // Encoding helper method to sanitize and encode URL parameters
+    private String encode(String s) {
+        return s != null ? URLEncoder.encode(s.replaceAll("[\r\n]", ""), StandardCharsets.UTF_8) : "";
     }
 
     @Bean
