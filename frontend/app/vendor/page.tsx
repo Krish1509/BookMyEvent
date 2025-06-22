@@ -172,7 +172,7 @@ export default function VendorForm() {
       formData.append('area', form.area);
       formData.append('pincode', form.pincode);
 
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/addvendor`, {
+  const res = await fetch(`https://bookmyevent-25dv.onrender.com/addvendor`, {
   method: 'POST',
   body: formData,
   credentials: 'include', // required for cookies/session
