@@ -1,4 +1,4 @@
-const BACKEND_URL = `${process.env.NEXT_PUBLIC_API_URL}`;
+const BACKEND_URL = "https://bookmyevent-25dv.onrender.com";
 
 export const authService = {
   async loginWithGoogle() {
@@ -7,7 +7,7 @@ export const authService = {
     
     // Redirect to backend's OAuth endpoint with the frontend callback URL
     const callbackUrl = encodeURIComponent(`${window.location.origin}/auth/callback`);
-    window.location.href = `https://bookmyevent-25dv.onrender.com/oauth2/authorization/google?redirect_uri=${callbackUrl}`;
+    window.location.href = `${BACKEND_URL}/oauth2/authorization/google?redirect_uri=${callbackUrl}`;
   },
 
   handleAuthRedirect() {
