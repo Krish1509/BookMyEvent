@@ -2,6 +2,6 @@ import axios from "axios";
 
 export const getEvents = async () => {
     const baseUrl = process.env.NEXT_PUBLIC_API_URL;
-    const res = await axios.get(`${baseUrl}/api/events`);
+    const res = await axios.get(`https://bookmyevent-25dv.onrender.comapi/events`);
     return res.data;
 };
