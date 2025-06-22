@@ -37,27 +37,28 @@ public class SecurityConfig {
                 .anyRequest().authenticated()
             )
             .oauth2Login(oauth2 -> oauth2
-                .loginPage("/login")
-                .successHandler((request, response, authentication) -> {
-                    OAuth2User oauth2User = (OAuth2User) authentication.getPrincipal();
+    .loginPage("/login")
+    .successHandler((request, response, authentication) -> {
+        OAuth2User oauth2User = (OAuth2User) authentication.getPrincipal();
 
-                    String email = oauth2User.getAttribute("email");
-                    String name = oauth2User.getAttribute("name");
-                    String picture = oauth2User.getAttribute("picture");
+        String email = oauth2User.getAttribute("email");
+        String name = oauth2User.getAttribute("name");
+        String picture = oauth2User.getAttribute("picture");
+        String token = email; // Temporary placeholder for token (replace with JWT if needed)
 
-                    String token = email; // Placeholder for token, use JWT in real apps
+        // Avoid CR/LF problems and encode everything properly
+        String redirectUrl = String.format("%s/auth/callback?token=%s&name=%s&email=%s&picture=%s",
+            FRONTEND_URL,
+            URLEncoder.encode(token.replaceAll("[\\r\\n]", ""), StandardCharsets.UTF_8),
+            URLEncoder.encode(name != null ? name.replaceAll("[\\r\\n]", "") : "", StandardCharsets.UTF_8),
+            URLEncoder.encode(email != null ? email.replaceAll("[\\r\\n]", "") : "", StandardCharsets.UTF_8),
+            URLEncoder.encode(picture != null ? picture.replaceAll("[\\r\\n]", "") : "", StandardCharsets.UTF_8)
+        );
 
-                    // Build redirect URL with encoded parameters
-                  String redirectUrl = String.format("%s/auth/callback?token=%s&name=%s&email=%s&picture=%s",
-    FRONTEND_URL,
-    encode(token),
-    encode(name),
-    encode(email),
-    encode(picture)
-);
-response.sendRedirect(redirectUrl);
-                })
-            )
+        response.sendRedirect(redirectUrl);
+    })
+)
+
             .logout(logout -> logout
                 .logoutSuccessHandler((request, response, authentication) -> {
                     response.sendRedirect(FRONTEND_URL + "/login");
